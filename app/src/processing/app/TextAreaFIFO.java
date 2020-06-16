@@ -33,13 +33,26 @@ public class TextAreaFIFO extends JTextArea implements DocumentListener {
   private int updateCount; // limit how often we trim the document
 
   private boolean doTrim;
+  private FifoDocument fifo;
 
   public TextAreaFIFO(int max) {
     maxChars = max;
     trimMaxChars = max / 2;
     updateCount = 0;
     doTrim = true;
+    fifo = null;
     getDocument().addDocumentListener(this);
+  }
+
+  public void setFifo(FifoDocument doc) {
+    getDocument().removeDocumentListener(this);
+    doTrim = false;
+    fifo = doc;
+    setDocument(doc);
+  }
+
+  public FifoDocument getFifo() {
+    return fifo;
   }
 
   public void insertUpdate(DocumentEvent e) {

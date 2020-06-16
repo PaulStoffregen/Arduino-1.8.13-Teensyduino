@@ -174,6 +174,8 @@ public class SerialDiscovery implements Discovery, Runnable {
         TargetBoard board = (TargetBoard) boardData.get("board");
         if (board != null) {
           String boardName = board.getName();
+          // Teensy uses same VID/PID for all models
+          if (boardName != null && boardName.startsWith("Teensy")) boardName = "Teensy";
           boardPort.setBoardName(boardName);
         }
       } else if (!parts[1].equals("0000")) {

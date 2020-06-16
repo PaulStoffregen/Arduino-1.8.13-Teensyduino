@@ -179,7 +179,8 @@ public abstract class AbstractMonitor extends JFrame implements ActionListener {
     if (boardPort == null) {
       return;
     }
-    setTitle(boardPort.getLabel());
+    String label = boardPort.getLabel();
+    if (label != null) setTitle(label);
     this.boardPort = boardPort;
   }
 
