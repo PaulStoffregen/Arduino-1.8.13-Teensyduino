@@ -369,7 +369,6 @@ public class FifoDocument implements Document
 		int lhead = line_head + 1;
 		if (lhead > line_size) lhead = 0;
 		if (line_len > 0) {
-			//for (int i = (last_line_incomplete ? 1 : 0); i < newline_count; i++) {
 			while (nindex < newline_count) {
 				addLine(chead + npos, newline_offset[nindex] - npos + 1);
 				npos = newline_offset[nindex] + 1;
@@ -383,7 +382,13 @@ public class FifoDocument implements Document
 				last_line_incomplete = true;
 			}
 		}
-
+		// If the last line is complete (ends with '\n'), add an empty line.
+		// This solves a problem where very long lines leave cause the window
+		// to horizontally scrolled too far
+		if (last_line_incomplete == false) {
+			addLine(char_head, 0);
+			last_line_incomplete = true;
+		}
 		// transmit insert event
 		insertEvent.setCharRange(charIndexToOffset(chead), char_len);
 		insertEvent.setLineRange(lineIndexToOffset(lhead), line_len);
