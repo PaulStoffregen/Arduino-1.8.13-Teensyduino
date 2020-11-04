@@ -164,6 +164,9 @@ public class FifoDocument implements Document
 		char_head = char_tail = 0;
 		line_head = line_tail = 0;
 		char_buf = null;
+		for (int i=0; i < line_size; i++) {
+			line_buf[i] = null;
+		}
 		line_buf = null;
 		newline_offset = null;
 		System.gc();
