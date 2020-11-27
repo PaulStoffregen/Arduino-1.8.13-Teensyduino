@@ -253,9 +253,9 @@ public class FifoDocument implements Document
 				line_len = newline_count + 1;
 			}
 		}
-		println("processAppended, newline_count = " + newline_count
+		println("\nprocessAppended, newline_count = " + newline_count
 			+ ", line_len = " + line_len);
-		println("  TEXT=\"" + new String(char_buf, chead, char_len) + "\"");
+		println("  TEXT=\"" + new String(char_buf, chead, char_len).replaceAll("\n","<nl>") + "\"");
 
 		if (scrolling) {
 			// scrolling mode: delete old data as needed to stay under thresholds
@@ -449,7 +449,7 @@ public class FifoDocument implements Document
 	}
 
 	public synchronized void getText(int offset, int length, Segment txt) throws BadLocationException {
-		println("Document: getText, offset=" + offset + ", len=" + length);
+		print("Document: getText, offset=" + offset + ", len=" + length);
 		if (length < 0 || offset < 0) {
 			//System.out.println("FifoDocument.getText ****NEGATIVE NUMBER ERROR****");
 			throw new BadLocationException("negative input not allowed", 0);
@@ -471,7 +471,7 @@ public class FifoDocument implements Document
 			txt.count = char_size - index;
 			txt.setPartialReturn(true);
 		}
-		println("  text=" + txt.toString());
+		println("  text=" + txt.toString().replaceAll("\n","<nl>"));
 	}
 	public synchronized int getCharCount() {
 		int len = char_head - char_tail;
@@ -581,13 +581,16 @@ public class FifoDocument implements Document
 	// within the entire history of the data stream.
 
 	public synchronized Position createPosition(int offset) throws BadLocationException {
-		println("Document: createPosition");
+		print("Document: createPosition: ");
 		if (offset < 0) throw new BadLocationException("negative input not allowed", 0);
-		if (offset == 0 || char_buf == null) return startPosition;
+		if (offset == 0 || char_buf == null) {
+			println("startPosition");
+			return startPosition;
+		}
 		int length = getCharCount();
 		if (offset > length) throw new BadLocationException("beyond end", offset);
 		long pos = char_total - length + offset;
-		println("  offset=" + offset + " -> pos=" + pos);
+		println("offset=" + offset + " -> pos=" + pos);
 		return new FifoPosition(this, char_total - length + offset);
 	}
 	public Position getStartPosition() {
@@ -607,7 +610,7 @@ public class FifoDocument implements Document
 		return (int)(location - first_location);
 	}
 	public synchronized String getText(int offset, int length) throws BadLocationException {
-		println("Document: getText (String), offset=" + offset + ", len=" + length);
+		print("Document: getText (String), offset=" + offset + ", len=" + length);
 		if (length < 0 || offset < 0) {
 			throw new BadLocationException("negative input not allowed", 0);
 		}
@@ -628,7 +631,7 @@ public class FifoDocument implements Document
 			String s2 = new String(char_buf, 0, length - remain);
 			s = s1 + s2;
 		}
-		println("  text=" + s);
+		println("  text=" + s.replaceAll("\n","<nl>"));
 		return s;
 	}
 
@@ -677,14 +680,15 @@ public class FifoDocument implements Document
 ////////////////////////////////////////////////////////
 
 	private void actual_print(String str) {
-		//System.out.print(str); // comment this line to suppress debug printing
+		System.out.print(str); // comment this line to suppress debug printing
 	}
 
 	private long prior_milliseconds = 0;
 
 	public void print(String str) {
 		long now = System.currentTimeMillis();
-		if (now - prior_milliseconds > 100) actual_print("\n\n");
+		long msec = now - prior_milliseconds;
+		if (msec >= 100) actual_print("\n  {elapsed " + msec + " milliseconds}\n\n");
 		prior_milliseconds = now;
 		actual_print(str);
 	}
