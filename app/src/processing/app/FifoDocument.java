@@ -389,7 +389,7 @@ public class FifoDocument implements Document
 		// This solves a problem where very long lines leave cause the window
 		// to horizontally scrolled too far
 		if (last_line_incomplete == false) {
-			addLine(char_head, 0);
+			addLine(char_head + 1, 0);
 			last_line_incomplete = true;
 		}
 		// transmit insert event
