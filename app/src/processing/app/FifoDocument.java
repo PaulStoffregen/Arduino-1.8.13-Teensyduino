@@ -680,7 +680,7 @@ public class FifoDocument implements Document
 ////////////////////////////////////////////////////////
 
 	private void actual_print(String str) {
-		System.out.print(str); // comment this line to suppress debug printing
+		//System.out.print(str); // comment this line to suppress debug printing
 	}
 
 	private long prior_milliseconds = 0;
