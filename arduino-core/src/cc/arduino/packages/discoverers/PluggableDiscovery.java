@@ -33,6 +33,7 @@ import static processing.app.I18n.format;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +100,14 @@ public class PluggableDiscovery implements Discovery {
     } catch (InterruptedException e) {
       debug("thread exit by interrupt");
       e.printStackTrace();
+    } catch (IOException e) {
+      debug("thread exit by I/O exception");
+      if (program == null) {
+        // IOException is the expected behavior when stop()
+        // destroys program without terminating this thread
+      } else {
+        e.printStackTrace();
+      }
     } catch (Exception e) {
       debug("thread exit other exception");
       e.printStackTrace();
