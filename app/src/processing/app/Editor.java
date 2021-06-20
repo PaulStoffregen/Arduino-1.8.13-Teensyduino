@@ -2034,6 +2034,10 @@ public class Editor extends JFrame implements RunnerListener {
    * hitting export twice, quickly, and horking things up.
    */
   synchronized public void handleExport(final boolean usingProgrammer) {
+    if (usingProgrammer && BaseNoGui.isTeensyduino()) {
+      statusError(tr("No programmers available for this board"));
+      return;
+    }
     if (PreferencesData.getBoolean("editor.save_on_verify")) {
       if (sketch.isModified() && !sketchController.isReadOnly()) {
         handleSave(true);
